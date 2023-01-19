@@ -13,40 +13,42 @@ namespace WebApi_Controller_EF_Dapper.Controllers
     {
         private readonly ILogger<CategoryController> _logger;
         private readonly ApplicationDbContext _dbContext;
-        private readonly HttpContext _http;
-
+        
         public CategoryController(ILogger<CategoryController> logger,
-                                 ApplicationDbContext dbContext,
-                                 HttpContext http
-                                )
+                                 ApplicationDbContext dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
-            _http = http;
         }
 
         //------------------------------------------------------------------------------------
         //EndPoints
         //------------------------------------------------------------------------------------
-        [HttpGet(Name = "/category/{id:guid}")]
+
+        [HttpGet,Route("{id:guid}")]
         public IActionResult CategoryGet([FromRoute] Guid id)
         {
             var Categorys = _dbContext.Categories
                          .AsNoTracking()
                          .ToList();
 
-            var categoryResponseDTO = Categorys.Select(p => new CategoryResponseDTO(
-                                                        p.Id,
-                                                        p.Name,
-                                                        p.Active
+            var categoryResponseDTO = Categorys.Where(p => p.Id == id)
+                                               .Select(p => new CategoryResponseDTO(
+                                                       p.Id,
+                                                       p.Name,
+                                                       p.Active
                                                      ));
 
             return new ObjectResult(categoryResponseDTO);
         }
 
-        [HttpGet(Name = "/category")]
+        [HttpGet,Route("")]
         public IActionResult CategorysGetAll()
         {
+
+            //teste
+            var pathBase = HttpContext.Request.PathBase;
+
             var categories = _dbContext.Categories
                           .AsNoTracking()
                           .ToList();
@@ -61,7 +63,7 @@ namespace WebApi_Controller_EF_Dapper.Controllers
             return new ObjectResult(categoriesResponseDTO);
         }
 
-        [HttpPost(Name = "/category/")]
+        [HttpPost,Route("")]
         public async Task<IActionResult> CategoryPost(CategoryRequestDTO categoryRequestDTO)
         {
             //Usuario fixo, mas  poderia vir de um identity
@@ -83,7 +85,8 @@ namespace WebApi_Controller_EF_Dapper.Controllers
             return new ObjectResult(Results.Created($"/category/{category.Id}", category.Id));
         }
 
-        [HttpPut(Name = "/category/{id:guid}")]
+
+        [HttpPut,Route("{id:guid}")]
         public IActionResult CategoryPut([FromRoute] Guid id,
                                          CategoryRequestDTO categoryRequestDTO)
         {
@@ -112,7 +115,7 @@ namespace WebApi_Controller_EF_Dapper.Controllers
             return new ObjectResult(Results.Ok());
         }
 
-        [HttpDelete(Name = "/category/{id:guid}")]
+        [HttpDelete,Route("{id:guid}")]
         public IActionResult CategoryDelete([FromRoute] Guid id)
         {
             //Recupero o produto do banco

@@ -6,25 +6,22 @@ using System.Text.Json;
 using WebApi_Controller_EF_Dapper.Business;
 using WebApi_Controller_EF_Dapper.Domain.Database;
 
-var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 //==================================================================================================
 //Serviços
 //==================================================================================================
 
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
 //Adicionando o serviço do Swagger
-//builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); // Resolve conflito de nomes de endpoits no swagger
+   c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); // Resolve conflito de nomes de endpoits no swagger
 });
 
 //--------------------------------------------------------------------------------------------------
@@ -56,6 +53,7 @@ builder.Services.AddEndpointsApiExplorer();
 //Meus servicos personalizados da aplicacao
 //--------------------------------------------------------------------------------------------------
 builder.Services.AddScoped<ServiceAllProductsSold>();
+
 
 //==================================================================================================
 //Application

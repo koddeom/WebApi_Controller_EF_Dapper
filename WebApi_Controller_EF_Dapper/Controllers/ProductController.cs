@@ -15,24 +15,20 @@ namespace WebApi_Controller_EF_Dapper.Controllers
         private readonly ILogger<ProductController> _logger;
         private readonly ApplicationDbContext _dbContext;
         private readonly ServiceAllProductsSold _serviceAllProductsSold;
-        private readonly HttpContext _http;
 
         public ProductController(ILogger<ProductController> logger,
                                  ApplicationDbContext dbContext,
-                                 ServiceAllProductsSold serviceAllProductsSold,
-                                 HttpContext http
-                                )
+                                 ServiceAllProductsSold serviceAllProductsSold)
         {
             _logger = logger;
             _dbContext = dbContext;
             _serviceAllProductsSold = serviceAllProductsSold;
-            _http = http;
         }
 
         //------------------------------------------------------------------------------------
         //EndPoints
         //------------------------------------------------------------------------------------
-        [HttpGet(Name = "/product/{id:guid}")]
+        [HttpGet,Route("{id:guid}")]
         public IActionResult ProductGet([FromRoute] Guid id)
         {
             var products = _dbContext.Products
@@ -52,7 +48,7 @@ namespace WebApi_Controller_EF_Dapper.Controllers
             return new ObjectResult(productResponseDTO);
         }
 
-        [HttpGet(Name = "/product")]
+        [HttpGet,Route("")]
         public IActionResult ProductsGetAll()
         {
             var products = _dbContext.Products
@@ -72,14 +68,14 @@ namespace WebApi_Controller_EF_Dapper.Controllers
             return new ObjectResult(productsResponseDTO);
         }
 
-        [HttpGet(Name = "/product/sold")]
+        [HttpGet, Route("{id:guid}/solds")]
         public IActionResult ProductSoldGet()
         {
             var result = _serviceAllProductsSold.Execute();
             return new ObjectResult(result);
         }
 
-        [HttpPost(Name = "/product/")]
+        [HttpPost, Route("")]
         public async Task<IActionResult> ProductPost(ProductRequestDTO productRequestDTO)
         {
             //Usuario fixo, mas  poderia vir de um identity
@@ -109,7 +105,7 @@ namespace WebApi_Controller_EF_Dapper.Controllers
             return new ObjectResult(Results.Created($"/products/{product.Id}", product.Id));
         }
 
-        [HttpPut(Name = "/product/{id:guid}")]
+        [HttpPut, Route("{id:guid}")]
         public IActionResult ProductPut([FromRoute] Guid id,
                                          ProductRequestDTO productRequestDTO)
         {
@@ -149,7 +145,7 @@ namespace WebApi_Controller_EF_Dapper.Controllers
             return new ObjectResult(Results.Ok());
         }
 
-        [HttpDelete(Name = "/product/{id:guid}")]
+        [HttpDelete, Route("{id:guid}")]
         public IActionResult ProductDelete([FromRoute] Guid id)
         {
             //Recupero o produto do banco

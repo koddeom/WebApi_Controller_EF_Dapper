@@ -12,22 +12,18 @@ namespace WebApi_Controller_EF_Dapper.Controllers
     {
         private readonly ILogger<OrderController> _logger;
         private readonly ApplicationDbContext _dbContext;
-        private readonly HttpContext _http;
 
         public OrderController(ILogger<OrderController> logger,
-                                 ApplicationDbContext dbContext,
-                                 HttpContext http
-                                )
+                                 ApplicationDbContext dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
-            _http = http;
         }
 
         //------------------------------------------------------------------------------------
         //EndPoints
         //------------------------------------------------------------------------------------
-        [HttpGet(Name = "/order/{id:guid}")]
+        [HttpGet,Route("{id:guid}")]
         public IActionResult OrderGet([FromRoute] Guid id)
         {
             //Usuario fixo, mas  poderia vir de um identity
@@ -46,6 +42,7 @@ namespace WebApi_Controller_EF_Dapper.Controllers
             return new ObjectResult(orderResponseDTO);
         }
 
+        [HttpPost, Route("")]
         public async Task<IActionResult> OrderPost(OrderRequestDTO orderRequestDTO)
         {
             //Usuario fixo, mas  poderia vir de um identity
